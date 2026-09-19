@@ -52,7 +52,7 @@ async function extrairComprovante(bufferArquivo, mimeType) {
   const tipoConteudo = mimeType === "application/pdf" ? "document" : "image";
 
   const interaction = await ai.interactions.create({
-    model: "gemini-3.8-flash",
+    model: "gemini-3.6-flash",
     input: [
       { type: "text", text: PROMPT },
       {
