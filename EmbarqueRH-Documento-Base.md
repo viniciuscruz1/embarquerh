@@ -152,6 +152,7 @@ Decisão: o MVP será construído **sem nenhum custo**, para uma demonstração 
 - Coleta e validação de documentos admissionais.
 - Fila de revisão manual para casos "zona cinzenta" (hoje é tudo aceito/recusado automaticamente).
 - Novos benefícios além dos 3 iniciais.
+- Melhoria visual/UX do painel do RH (hoje funcional mas simples — aprovado como suficiente para o MVP; refinamento visual fica para depois da aprovação do projeto).
 
 ## 11. Pendências / decisões em aberto
 
