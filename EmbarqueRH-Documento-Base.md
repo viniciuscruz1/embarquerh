@@ -68,9 +68,10 @@ As regras abaixo foram fornecidas diretamente pelo responsável do projeto (via 
 
 - RH deve conseguir, sem depender de TI:
   - Ver todas as prestações de conta recebidas, aceitas e recusadas (com motivo).
-  - Gerar relatórios no layout do TOTVS, sob demanda ou no fechamento mensal.
+  - **Acessar toda a documentação original enviada pelo colaborador** (cada foto/PDF de comprovante), filtrável por mês e ano da prestação de contas — implementado: os arquivos ficam no Supabase Storage, organizados por colaborador/ano-mês/benefício, com link de acesso temporário gerado sob demanda a partir da tela de detalhe de cada prestação.
+  - Gerar relatórios no layout do TOTVS, sob demanda ou no fechamento mensal, também filtrável por mês/ano.
   - **Atualizar regras de benefícios** (limites de valor, documentos exigidos, elegibilidade) via interface simples, sem precisar editar código ou pedir a um desenvolvedor.
-- Esse painel é de uso exclusivo do RH — colaboradores comuns não têm acesso a ele nem sabem que ele existe.
+- Esse painel é de uso exclusivo do RH — colaboradores comuns não têm acesso a ele nem sabem que ele existe. Acesso protegido por senha única (login simples), definida em variável de ambiente.
 
 ## 5. Identificação e autenticação
 
