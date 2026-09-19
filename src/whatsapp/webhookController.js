@@ -8,6 +8,20 @@ const router = express.Router();
 
 const estados = new Map();
 
+// Mensagens do mesmo numero podem chegar quase simultaneamente (ex: varios PDFs enviados
+// "juntos" no WhatsApp na verdade chegam como mensagens separadas). Sem isso, duas
+// mensagens processando ao mesmo tempo podiam checar "documentos faltando" antes uma da
+// outra terminar de registrar o seu, causando falso "ainda falta X". Essa fila garante que
+// so uma mensagem por numero seja processada de cada vez, na ordem de chegada.
+const filasPorNumero = new Map();
+
+function executarEmFila(numero, tarefa) {
+  const anterior = filasPorNumero.get(numero) || Promise.resolve();
+  const atual = anterior.then(tarefa, tarefa);
+  filasPorNumero.set(numero, atual.catch(() => {}));
+  return atual;
+}
+
 const OPCOES_BENEFICIO = {
   "1": "creche",
   "2": "ocular",
@@ -71,10 +85,7 @@ async function registrarPrestacao(colaboradorId, beneficio, documentosExtraidos,
   );
 }
 
-router.post("/", async (req, res) => {
-  const numero = normalizarWhatsapp(req.body.From);
-  const textoRecebido = (req.body.Body || "").trim();
-  const numMedia = parseInt(req.body.NumMedia || "0", 10);
+async function processarMensagem(req, res, numero, textoRecebido, numMedia) {
   const resposta = new twiml.MessagingResponse();
 
   try {
@@ -152,6 +163,14 @@ router.post("/", async (req, res) => {
     resposta.message("Tive um problema para processar sua mensagem. Pode tentar novamente em instantes?");
     return res.type("text/xml").send(resposta.toString());
   }
+}
+
+router.post("/", async (req, res) => {
+  const numero = normalizarWhatsapp(req.body.From);
+  const textoRecebido = (req.body.Body || "").trim();
+  const numMedia = parseInt(req.body.NumMedia || "0", 10);
+
+  await executarEmFila(numero, () => processarMensagem(req, res, numero, textoRecebido, numMedia));
 });
 
 module.exports = router;
