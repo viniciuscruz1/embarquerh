@@ -3,6 +3,7 @@ const { twiml } = require("twilio");
 const pool = require("../db/pool");
 const { extrairComprovante } = require("../ia/extrairComprovante");
 const { avaliarPrestacao, buscarRegra, verificarDocumentosExigidos, LABEL_PAPEL } = require("../regras/motorRegras");
+const { uploadArquivo } = require("../storage/supabaseStorage");
 
 const router = express.Router();
 
@@ -64,6 +65,12 @@ async function baixarMidia(url) {
   const mimeType = resposta.headers.get("content-type");
   return { buffer: Buffer.from(arrayBuffer), mimeType };
 }
+
+const EXTENSAO_POR_MIME = {
+  "application/pdf": "pdf",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+};
 
 function listarDocumentosFaltando(documentosExigidos, documentosRecebidos) {
   const papeisRecebidos = documentosRecebidos.map((doc) => doc.papelDocumento);
@@ -131,6 +138,14 @@ async function processarMensagem(req, res, numero, textoRecebido, numMedia) {
       for (let i = 0; i < numMedia; i++) {
         const { buffer, mimeType } = await baixarMidia(req.body[`MediaUrl${i}`]);
         const dadosExtraidos = await extrairComprovante(buffer, mimeType);
+
+        const agora = new Date();
+        const anoMes = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, "0")}`;
+        const extensao = EXTENSAO_POR_MIME[mimeType] || "bin";
+        const caminhoArquivo = `${colaborador.id}/${anoMes}/${estadoAtual.beneficio}-${dadosExtraidos.papelDocumento}-${agora.getTime()}.${extensao}`;
+        await uploadArquivo(caminhoArquivo, buffer, mimeType);
+        dadosExtraidos.arquivoPath = caminhoArquivo;
+
         estadoAtual.documentosRecebidos.push(dadosExtraidos);
       }
 
