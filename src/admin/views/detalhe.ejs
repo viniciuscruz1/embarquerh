@@ -1,0 +1,50 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<p><a href="/admin/prestacoes">&larr; Voltar para a lista</a></p>
+
+<h3>Prestação de contas #<%= prestacao.id %></h3>
+
+<table>
+  <tbody>
+    <tr><th>Colaborador</th><td><%= prestacao.colaborador_nome %> (<%= prestacao.whatsapp %> — <%= prestacao.email %>)</td></tr>
+    <tr><th>Benefício</th><td><%= labelBeneficio[prestacao.beneficio] || prestacao.beneficio %></td></tr>
+    <tr><th>Data</th><td><%= new Date(prestacao.criado_em).toLocaleString('pt-BR') %></td></tr>
+    <tr><th>Status</th><td>
+      <% if (prestacao.status === 'aprovado') { %>
+        <mark style="background: #d4edda;">Aprovado</mark>
+      <% } else { %>
+        <mark style="background: #f8d7da;">Recusado</mark>
+      <% } %>
+    </td></tr>
+    <tr><th>Valor reembolsado</th><td><%= prestacao.valor_reembolsado ? 'R$ ' + Number(prestacao.valor_reembolsado).toFixed(2) : '-' %></td></tr>
+    <% if (prestacao.motivo_recusa) { %>
+      <tr><th>Motivo da recusa</th><td><%= prestacao.motivo_recusa %></td></tr>
+    <% } %>
+  </tbody>
+</table>
+
+<h4>Documentos enviados</h4>
+<% documentos.forEach(function(doc, i) { %>
+  <article>
+    <header><strong><%= doc.papelDocumento %></strong> — <%= doc.tipoDocumento %></header>
+    <table>
+      <tbody>
+        <tr><th>Valor</th><td><%= doc.valor %></td></tr>
+        <tr><th>Data do documento</th><td><%= doc.data %> (texto original: "<%= doc.dataTextoOriginal %>")</td></tr>
+        <tr><th>Estabelecimento</th><td><%= doc.nomeEstabelecimento || '-' %></td></tr>
+        <tr><th>CNPJ</th><td><%= doc.cnpjPrestador || '-' %></td></tr>
+        <tr><th>Beneficiário</th><td><%= doc.beneficiario || '-' %></td></tr>
+        <tr><th>Código de validação</th><td><%= doc.codigoValidacao || '-' %></td></tr>
+        <tr><th>Observações da IA</th><td><%= doc.observacoes || '-' %></td></tr>
+      </tbody>
+    </table>
+    <% if (doc.url) { %>
+      <a role="button" href="<%= doc.url %>" target="_blank">Ver arquivo original</a>
+    <% } else { %>
+      <p><em>Arquivo original não disponível.</em></p>
+    <% } %>
+  </article>
+<% }) %>
+
+<%- include('partials/footer') %>

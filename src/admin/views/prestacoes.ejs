@@ -1,0 +1,87 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<h3>Prestações de contas</h3>
+
+<form method="GET" action="/admin/prestacoes" style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+  <div>
+    <label for="ano">Ano</label>
+    <select id="ano" name="ano">
+      <option value="">Todos</option>
+      <% anos.forEach(function(a) { %>
+        <option value="<%= a %>" <%= String(filtros.ano) === String(a) ? 'selected' : '' %>><%= a %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div>
+    <label for="mes">Mês</label>
+    <select id="mes" name="mes">
+      <option value="">Todos</option>
+      <% meses.forEach(function(nome, indice) { %>
+        <option value="<%= indice + 1 %>" <%= String(filtros.mes) === String(indice + 1) ? 'selected' : '' %>><%= nome %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div>
+    <label for="beneficio">Benefício</label>
+    <select id="beneficio" name="beneficio">
+      <option value="">Todos</option>
+      <option value="creche" <%= filtros.beneficio === 'creche' ? 'selected' : '' %>>Auxílio-creche</option>
+      <option value="ocular" <%= filtros.beneficio === 'ocular' ? 'selected' : '' %>>Auxílio ocular</option>
+      <option value="subsidio_educacional" <%= filtros.beneficio === 'subsidio_educacional' ? 'selected' : '' %>>Subsídio educacional</option>
+    </select>
+  </div>
+  <div>
+    <label for="status">Status</label>
+    <select id="status" name="status">
+      <option value="">Todos</option>
+      <option value="aprovado" <%= filtros.status === 'aprovado' ? 'selected' : '' %>>Aprovado</option>
+      <option value="recusado" <%= filtros.status === 'recusado' ? 'selected' : '' %>>Recusado</option>
+    </select>
+  </div>
+  <div>
+    <button type="submit">Filtrar</button>
+  </div>
+</form>
+
+<p>
+  <a role="button" class="secondary" href="/admin/relatorio.csv?ano=<%= filtros.ano || '' %>&mes=<%= filtros.mes || '' %>">
+    Exportar relatório (CSV) — apenas aprovados, layout provisório
+  </a>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Data</th>
+      <th>Colaborador</th>
+      <th>Benefício</th>
+      <th>Valor reembolsado</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (prestacoes.length === 0) { %>
+      <tr><td colspan="6">Nenhuma prestação de contas encontrada com esses filtros.</td></tr>
+    <% } %>
+    <% prestacoes.forEach(function(p) { %>
+      <tr>
+        <td><%= new Date(p.criado_em).toLocaleDateString('pt-BR') %></td>
+        <td><%= p.colaborador_nome %></td>
+        <td><%= labelBeneficio[p.beneficio] || p.beneficio %></td>
+        <td><%= p.valor_reembolsado ? 'R$ ' + Number(p.valor_reembolsado).toFixed(2) : '-' %></td>
+        <td>
+          <% if (p.status === 'aprovado') { %>
+            <mark style="background: #d4edda;">Aprovado</mark>
+          <% } else { %>
+            <mark style="background: #f8d7da;">Recusado</mark>
+          <% } %>
+        </td>
+        <td><a href="/admin/prestacoes/<%= p.id %>">Ver detalhes</a></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<%- include('partials/footer') %>

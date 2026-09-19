@@ -1,0 +1,29 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<h3>Regras dos benefícios</h3>
+
+<% if (salvo) { %>
+  <p style="color: #155724; background: #d4edda; padding: 0.5rem 1rem; border-radius: 4px;">Regra atualizada com sucesso.</p>
+<% } %>
+
+<% regras.forEach(function(regra) { %>
+  <article>
+    <header><strong><%= labelBeneficio[regra.beneficio] || regra.beneficio %></strong></header>
+    <form method="POST" action="/admin/regras/<%= regra.beneficio %>">
+      <% Object.entries(regra.parametros).forEach(function([chave, valor]) { %>
+        <label for="<%= regra.beneficio %>-<%= chave %>"><%= chave %></label>
+        <input type="text" id="<%= regra.beneficio %>-<%= chave %>" name="<%= chave %>" value="<%= valor %>">
+      <% }) %>
+
+      <label for="<%= regra.beneficio %>-elegibilidade">Descrição da elegibilidade</label>
+      <textarea id="<%= regra.beneficio %>-elegibilidade" name="elegibilidadeDescricao" rows="3"><%= regra.elegibilidade_descricao %></textarea>
+
+      <p><small>Documentos exigidos (não editável aqui): <%= regra.documentos_exigidos.join(', ') %></small></p>
+
+      <button type="submit">Salvar</button>
+    </form>
+  </article>
+<% }) %>
+
+<%- include('partials/footer') %>
