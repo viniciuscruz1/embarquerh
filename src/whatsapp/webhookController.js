@@ -131,8 +131,15 @@ async function processarMensagem(req, res, numero, textoRecebido, numMedia) {
       for (let i = 0; i < numMedia; i++) {
         const { buffer, mimeType } = await baixarMidia(req.body[`MediaUrl${i}`]);
         const dadosExtraidos = await extrairComprovante(buffer, mimeType);
+        console.log("DEBUG - documento recebido:", JSON.stringify({
+          papelDocumento: dadosExtraidos.papelDocumento,
+          valor: dadosExtraidos.valor,
+          tipoDocumento: dadosExtraidos.tipoDocumento,
+        }));
         estadoAtual.documentosRecebidos.push(dadosExtraidos);
       }
+
+      console.log("DEBUG - documentos acumulados ate agora:", JSON.stringify(estadoAtual.documentosRecebidos.map((d) => d.papelDocumento)));
 
       const motivoFaltando = verificarDocumentosExigidos(estadoAtual.documentosExigidos, estadoAtual.documentosRecebidos);
       if (motivoFaltando) {
