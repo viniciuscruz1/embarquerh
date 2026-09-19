@@ -1,0 +1,26 @@
+{
+  "creche": {
+    "parametros": {
+      "idadeMaximaAnos": 7,
+      "tetoValorMensal": 800
+    },
+    "documentosExigidos": ["cobranca", "pagamento"],
+    "elegibilidadeDescricao": "Filho(a) do colaborador com no máximo 7 anos de idade na data da prestação de contas. Reembolso limitado a R$800/mês (se a nota for maior, reembolsa-se o teto; se for menor, reembolsa-se o valor da nota)."
+  },
+  "ocular": {
+    "parametros": {
+      "percentualReembolso": 0.8,
+      "saldoAnualBase": 3040,
+      "renovacaoMesDia": "06-01"
+    },
+    "documentosExigidos": ["receita_medica", "cobranca", "pagamento"],
+    "elegibilidadeDescricao": "Todos os colaboradores. Saldo anual de 80% de R$3.800 (R$3.040), renovado todo dia 1º de junho. Reembolso de 80% do valor da nota, respeitando o saldo restante do ciclo."
+  },
+  "subsidio_educacional": {
+    "parametros": {
+      "percentualReembolso": 0.7
+    },
+    "documentosExigidos": ["cobranca", "pagamento"],
+    "elegibilidadeDescricao": "Colaboradores com despesas educacionais. Reembolso de 70% do menor valor entre o documento de cobrança e o comprovante de pagamento."
+  }
+}

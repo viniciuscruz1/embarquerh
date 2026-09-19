@@ -1,0 +1,19 @@
+{
+  "name": "embarquerh",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EmbarqueRH - agente de prestacao de contas de beneficios via WhatsApp (MVP)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "migrar": "node scripts/migrar.js",
+    "seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.23.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.23.0",
+    "twilio": "^6.1.1"
+  }
+}
