@@ -48,10 +48,22 @@ function verificarDocumentosExigidos(documentosExigidos, documentosExtraidos) {
   return null;
 }
 
+// Creche e subsidio educacional sao ambos "despesas escolares" e um documento generico
+// de mensalidade nao deixa claro qual dos dois e (isso so se define pela idade da crianca,
+// ja checada separadamente em avaliarCreche). Por isso ficam no mesmo grupo, para nao gerar
+// falso positivo de "documento nao bate com o beneficio declarado".
+const GRUPO_BENEFICIO = {
+  creche: "educacao",
+  subsidio_educacional: "educacao",
+  ocular: "ocular",
+};
+
 function verificarBeneficioDivergente(beneficioDeclarado, documentosExtraidos) {
-  const divergente = documentosExtraidos.find(
-    (doc) => doc.beneficioProvavel && doc.beneficioProvavel !== "desconhecido" && doc.beneficioProvavel !== beneficioDeclarado
-  );
+  const grupoDeclarado = GRUPO_BENEFICIO[beneficioDeclarado];
+  const divergente = documentosExtraidos.find((doc) => {
+    if (!doc.beneficioProvavel || doc.beneficioProvavel === "desconhecido") return false;
+    return GRUPO_BENEFICIO[doc.beneficioProvavel] !== grupoDeclarado;
+  });
   if (divergente) {
     return `Você informou "${beneficioDeclarado}", mas um dos documentos enviados parece se referir a "${divergente.beneficioProvavel}". Confira e envie novamente os documentos corretos.`;
   }

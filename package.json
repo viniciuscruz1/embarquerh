@@ -15,5 +15,8 @@
     "express": "^4.19.2",
     "pg": "^8.23.0",
     "twilio": "^6.1.1"
+  },
+  "devDependencies": {
+    "pdfkit": "^0.20.2"
   }
 }
